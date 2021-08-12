@@ -16,13 +16,18 @@ import './js/app.js'
 import galleryItems from './js/app.js';
 
 const galerryContainer = document.querySelector('.js-gallery');
-// console.log(galerryContainer);
+const lightBox = document.querySelector('.js-lightbox');
+const imageLightBox = document.querySelector('.lightbox__image');
+const openModalBtn = document.querySelector('.lightbox.is-open');
+const overlay = document.querySelector('.lightbox__overlay');
+
 const cardsGalerry = createGalerryElements(galleryItems);
-galerryContainer.addEventListener('click', onGalerryContainerClick)
+
+galerryContainer.addEventListener('click', onGalerryContainerClick);
 galerryContainer.insertAdjacentHTML('beforeend', cardsGalerry);
 
 function createGalerryElements(galleryItems) {
-  return galleryItems.map(({preview, original, description}) => {
+  return galleryItems.map(({ preview, original, description }) => {
     return `
     <li class="gallery__item">
   <a
@@ -38,19 +43,59 @@ function createGalerryElements(galleryItems) {
   </a>
 </li>`;
   })
-  .join('')
+    .join('');
+  
 };
-// console.log(createGalerryElements(galleryItems));
+function onCloseModal(el) {
+    console.log(el);
+  lightBox.classList.remove('is-open');
+  window.removeEventListener('keydown', onEscKeyPress);
+};
+
+function onEscKeyPress(event) {
+  const ESC_KEY_CODE = 'Escape';
+  const isEscKey = event.code === ESC_KEY_CODE;
+
+  if (isEscKey) {
+    onCloseModal();
+  };
+}
+
 
 function onGalerryContainerClick(evt) {
-  const elem = evt.target;
-  console.log(elem);
-  // src элемента img.lightbox__image
-  let srcElem = elem.dataset.source;
-  
-  if (!srcElem) {
-    return
+  if (evt.target.nodeName !== 'IMG') {
+    return;
   }
- srcElem = '/'
-
+  const elem = evt.target;
+  const srcElem = elem.dataset.source;
+  onOpenModal();
+  
+  imageLightBox.src = srcElem;
 }
+ 
+function onOpenModal(evt) {
+  lightBox.classList.add('is-open');
+  window.addEventListener('keydown', onEscKeyPress);
+  const isOpen = document.querySelector('.is-open')
+  const btnClose = document.querySelector('.lightbox__button');
+  btnClose.addEventListener('click', onCloseModal);
+  
+  
+}
+
+overlay.addEventListener('click', onOverlayClick)
+  function onOverlayClick(event) {
+    if (event.currentTarget === event.target) {
+      console.log('Кликнули именно в бекдроп!!!!');
+      onCloseModal();
+    }
+  }
+
+// function onLeftKeyPress(event) {
+//   const LEFT_KEY_CODE = 'ArrowLeft';
+//   const isLeftKey = event.code === LEFT_KEY_CODE;
+
+//   if (isLeftKey) {
+//     imageLightBox.src = srcElem;
+//   };
+// }
