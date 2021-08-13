@@ -48,6 +48,7 @@ function onEscKeyPress(event) {
 
 
 function onGalerryContainerClick(evt) {
+  evt.preventDefault();
   if (evt.target.nodeName !== 'IMG') {
     return;
   }
